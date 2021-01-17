@@ -25,8 +25,8 @@
         <v-btn block @click="login">Iniciar sesión</v-btn>
       </v-form>
       <footer class="login-footer">
-        <v-btn text>¿No tienes cuenta?</v-btn>
-        <v-btn text>¿Olvidaste tu contraseña?</v-btn>
+        <v-btn text @click="redirect('/signup')">¿No tienes cuenta?</v-btn>
+        <v-btn text @click="redirect('/reestablecer-contrasena')">¿Olvidaste tu contraseña?</v-btn>
       </footer>
     </div>
   </section>
@@ -46,6 +46,9 @@ export default {
     login() {
       console.log(this.$refs["login-form"].validate())
     },
+    redirect(path) {
+      this.$router.push(path)
+    }
   },
 }
 </script>
