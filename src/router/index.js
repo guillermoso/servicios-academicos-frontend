@@ -1,9 +1,9 @@
-import Vue from "vue"
-import VueRouter from "vue-router"
-import Home from "../views/Home.vue"
-import store from "../store"
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Home from "../views/Home.vue";
+import store from "../store";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   {
@@ -24,6 +24,14 @@ const routes = [
       layout: "auth",
     },
   },
+  {
+    path: "/signup",
+    name: "Signup",
+    component: () => import("@/views/Signup.vue"),
+    meta: {
+      layout: "auth",
+    },
+  },
   //*                               *//
   // siempre dejar esta ruta hasta abajo
   //*                               *//
@@ -34,16 +42,21 @@ const routes = [
       layout: "page-not-found",
     },
   },
-]
+];
 
 const router = new VueRouter({
   routes,
-})
+});
 
 // verificacion de que el token este seteado para continuar al app
 router.beforeEach((to, from, next) => {
-  if (to.name !== 'Login' && !store.getters.isTokenSet) next({ name: 'Login' })
-  else next()
-})
+  // rutas a las que se puede acceder sin estar autenticado
+  const allowedRoutes = ["Login", "Signup", "ReestablecerContrasena"];
 
-export default router
+  const navigatingToUnprotectedRoute = allowedRoutes.indexOf(to.name) > -1;
+
+  if (!navigatingToUnprotectedRoute && !store.getters.isTokenSet) next({ name: "Login" });
+  else next();
+});
+
+export default router;
