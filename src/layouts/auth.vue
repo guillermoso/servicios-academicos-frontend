@@ -45,7 +45,7 @@ export default {
 .title-main {
   margin-top: 25%;
   display: flex;
-  height: 100%;
+  height: 75%;
   justify-content: center;
 }
 
