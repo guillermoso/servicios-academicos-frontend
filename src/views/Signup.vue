@@ -2,38 +2,59 @@
   <section class="signup-container">
     <div>
       <h1 class="signup-title">Crea una cuenta</h1>
-      <v-form
-        class="signup-form"
-        ref="signup-form"
-        v-model="valid"
-        lazy-validation
-      >
-      <!-- TODO: consultar el api para los tipos de usuarios -->
+      <v-form class="signup-form" ref="signup-form" v-model="valid" lazy-validation>
+        <v-alert class="signup-alert" icon="shield" text type="info">
+          Nota: Su contraseña será enviada a su correo de la UACJ. Si es incorporado esta será
+          enviada al correo que utilice para registrarse.
+        </v-alert>
         <v-select
-          v-model="userModel.type"
+          v-model="userModel.tipo_usuario"
           :items="userTypes"
           label="Tipo de usuario"
+          :rules="requiredRule"
+          required
           outlined
         ></v-select>
         <v-text-field
+          label="Matrícula"
+          v-if="userModel.tipo_usuario == 'Alumno'"
+          v-model="userModel.matricula"
+          :rules="requiredRule"
           @keyup.enter="signup"
-          v-model="email"
-          :rules="emailRules"
-          label="Correo"
           outlined
           required
         ></v-text-field>
         <v-text-field
-          :append-icon="showPass ? 'visibility' : 'visibility_off'"
-          v-model="password"
-          :rules="passwordRules"
-          label="Contraseña"
+          label="Nombre"
+          v-model="userModel.nombre"
+          :rules="requiredRule"
+          @keyup.enter="signup"
           outlined
           required
-          :type="showPass ? 'text' : 'password'"
-          @keyup.enter="signup"
-          @click:append="showPass = !showPass"
         ></v-text-field>
+        <v-text-field
+          label="Correo"
+          v-model="userModel.correo"
+          v-if="userModel.tipo_usuario == 'Incorporado'"
+          :rules="emailRules"
+          @keyup.enter="signup"
+          outlined
+          required
+        ></v-text-field>
+        <institutes-select
+          ref="institutes-select"
+          :rules="requiredRule"
+          v-if="userModel.tipo_usuario == 'Alumno'"
+          required
+          @nuevo-valor="userModel.instituto = $event.value"
+        />
+        <programs-select
+          ref="programs-select"
+          :rules="requiredRule"
+          v-if="userModel.tipo_usuario == 'Alumno'"
+          required
+          @nuevo-valor="userModel.programa = $event.value"
+        />
         <v-btn block @click="signup">Crear cuenta</v-btn>
       </v-form>
     </div>
@@ -41,45 +62,84 @@
 </template>
 
 <script>
+import { signUp } from "../api/user-requests"
+import institutesSelect from "../components/selects/institutes-select"
+import programsSelect from "../components/selects/programs-select"
+
 export default {
+  components: { institutesSelect, programsSelect },
   data: () => ({
     valid: true,
-    email: "",
     emailRules: [
-      (v) => !!v || "El campo correo es requerido",
-      (v) => /.+@.+\..+/.test(v) || "Correo no válido",
+      (v) => !!v || "Este campo es requerido",
+      (v) => /.+@.+\..+/.test(v) || "El correo no es válido",
     ],
-    showPass: false,
-    password: "",
-    passwordRules: [(v) => !!v || "El campo contraseña es requerido"],
+    requiredRule: [(v) => !!v || "Este campo es requerido"],
     userModel: {
-      type: "alumno",
+      tipo_usuario: "Alumno",
+      matricula: "",
+      nombre: "",
+      instituto: "",
+      programa: "",
+      correo: "",
     },
     userTypes: [
       {
         text: "Alumno UACJ",
-        value: "alumno",
+        value: "Alumno",
       },
       {
         text: "Incorporado",
-        value: "incorporado",
+        value: "Incorporado",
       },
     ],
+    institutes: ["IADA", "ICSA", "IIT", "CU"],
   }),
   methods: {
     signup() {
-      console.log(this.$refs["signup-form"].validate());
+      console.log(this.$refs["signup-form"].validate())
+      console.log("entra")
+      signUp(this.userModel)
+        .then(() => {
+          this.$message({
+            message: "Cuenta creada correctamente.",
+            type: "success",
+          })
+          this.$router.push("/login")
+        })
+        .catch((error) => {
+          console.log(error.response)
+
+          this.$message({
+            message: "Ocurrió un error al crear su cuenta",
+            type: "error",
+          })
+        })
     },
-    redirect(path) {
-      this.$router.push(path);
+    resetForm() {
+      this.valid = true
+      this.userModel = {
+        tipo_usuario: "Alumno",
+        matricula: "",
+        nombre: "",
+        instituto: "",
+        programa: "",
+        correo: "",
+      }
+      this.$refs["programs-select"].reset_select()
+      this.$refs["institutes-select"].reset_select()
     },
   },
-};
+}
 </script>
 
 <style scoped>
+.signup-alert {
+  margin: 0 0 22px 0;
+}
+
 .signup-container {
-  margin-top: 17.5%;
+  margin-top: 12.5%;
   display: flex;
   justify-content: center;
 }
