@@ -37,10 +37,10 @@ export default {
   data: () => ({
     valid: true,
     email: "",
-    emailRules: [(v) => !!v || "El campo correo es requerido", (v) => /.+@.+\..+/.test(v) || "Correo no válido"],
+    emailRules: [(v) => !!v || "Este campo es requerido", (v) => /.+@.+\..+/.test(v) || "El correo no es válido"],
     showPass: false,
     password: "",
-    passwordRules: [(v) => !!v || "El campo contraseña es requerido"],
+    passwordRules: [(v) => !!v || "Este campo es requerido"],
   }),
   methods: {
     login() {
