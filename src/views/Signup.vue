@@ -55,7 +55,7 @@
           required
           @nuevo-valor="userModel.programa = $event.value"
         />
-        <v-btn block @click="signup">Crear cuenta</v-btn>
+        <v-btn block :loading="cargando" @click="signup">Crear cuenta</v-btn>
       </v-form>
     </div>
   </section>
@@ -69,6 +69,7 @@ import programsSelect from "../components/selects/programs-select"
 export default {
   components: { institutesSelect, programsSelect },
   data: () => ({
+    cargando: false,
     valid: true,
     emailRules: [
       (v) => !!v || "Este campo es requerido",
@@ -97,24 +98,28 @@ export default {
   }),
   methods: {
     signup() {
-      console.log(this.$refs["signup-form"].validate())
-      console.log("entra")
-      signUp(this.userModel)
-        .then(() => {
-          this.$message({
-            message: "Cuenta creada correctamente.",
-            type: "success",
+      if (this.$refs["signup-form"].validate()) {        
+        this.cargando = true;
+        signUp(this.userModel)
+          .then(() => {
+            this.$message({
+              message: "Cuenta creada correctamente.",
+              type: "success",
+            })
+            this.$router.push("/login")
           })
-          this.$router.push("/login")
-        })
-        .catch((error) => {
-          console.log(error.response)
+          .catch((error) => {
+            console.error(error.response)
 
-          this.$message({
-            message: "Ocurrió un error al crear su cuenta",
-            type: "error",
+            this.$message({
+              message: "Ocurrió un error al crear su cuenta",
+              type: "error",
+            })
           })
-        })
+          .finally(() => {
+              this.cargando = false;
+          })
+        }
     },
     resetForm() {
       this.valid = true
