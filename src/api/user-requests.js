@@ -1,4 +1,5 @@
 import axios from "./index.js"
+import jwt_decode from 'jwt-decode'
 
 //Funcion que muestra la lista de todas las reglas existentes
 export const signUp = (userModel) => {
@@ -52,6 +53,34 @@ export const signUp = (userModel) => {
   })
 }
 
+export const logIn = (credenciales) => {
+  
+  if(credenciales.correo === undefined || credenciales.contrasena === undefined) {
+    throw new Error("parametros faltantes")
+  }
+
+  const route = "/api/login"
+  return new Promise((resolve, reject) => {
+    axios
+      .post(route, credenciales)
+      .then((response) => {
+        let token = response.data.token
+        let parsedToken = jwt_decode(response.data.token)
+        resolve({token, parsedToken})
+      })
+      .catch((e) => {
+        const status = e.response.status;
+
+        if (status !== 500) {
+          reject({ mensaje: e.response.data.mensaje })
+        }
+        reject(e)
+      })
+  })
+
+}
+
 export default {
   signUp,
+  logIn
 }
