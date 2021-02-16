@@ -1,12 +1,13 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import { state } from '@/store/state.js'
-import { getters } from '@/store/getters'
-import { mutations } from '@/store/mutations.js'
-import { actions } from '@/store/actions.js'
-import { auth } from '@/store/modules/auth.js'
+import Vue from "vue";
+import Vuex from "vuex";
+import { state } from "@/store/state.js";
+import { getters } from "@/store/getters";
+import { mutations } from "@/store/mutations.js";
+import { actions } from "@/store/actions.js";
+import { auth } from "@/store/modules/auth.js";
+import createPersistedState from "vuex-persistedstate";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   strict: true,
@@ -16,5 +17,10 @@ export default new Vuex.Store({
   state,
   getters,
   mutations,
-  actions
-})
+  actions,
+  plugins: [
+    createPersistedState({
+      paths: ["auth"],
+    }),
+  ],
+});
