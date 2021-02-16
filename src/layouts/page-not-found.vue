@@ -4,9 +4,9 @@
     <h2>Página no encontrada.</h2>
     <p>Revisa el URL y asegurate que esté bien escrito.</p>
     <router-link to="/">
-      <el-button type="primary">
+      <v-btn type="primary">
         Regresar al inicio
-      </el-button>
+      </v-btn>
     </router-link>
   </div>
 </template>
