@@ -41,6 +41,7 @@
 
 <script>
 import { logIn } from "../api/user-requests";
+import axios from "../api";
 
 export default {
   data: () => ({
@@ -64,7 +65,7 @@ export default {
           contrasena: this.password,
         })
           .then(({ token, parsedToken }) => {
-            console.log(token, parsedToken);
+            axios.defaults.headers["Authorization"] = token;
             this.$store.dispatch("storeUserInfo", { token, parsedToken })
               .then(() => {
                 this.redirect('/')
