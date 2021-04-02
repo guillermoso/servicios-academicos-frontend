@@ -38,20 +38,20 @@ export default {
       switch (this.properties.type) {
         case "success":
           this.properties.color = "#4caf50";
-          this.properties.icon = "mdi-check-circle";
+          this.properties.icon = "check_circle";
           break;
         case "error":
           this.properties.color = "#ff5252";
-          this.properties.icon = "mdi-alert";
+          this.properties.icon = "error";
           break;
         case "warning":
           this.properties.color = "#fb8c00";
-          this.properties.icon = "mdi-exclamation";
+          this.properties.icon = "warning";
           break;
         case "info":
         default:
           this.properties.color = "#2196f3";
-          this.properties.icon = "mdi-information";
+          this.properties.icon = "info";
           break;
       }
 

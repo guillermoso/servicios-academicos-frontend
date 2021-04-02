@@ -1,7 +1,6 @@
 import axios from "./index.js"
 import jwt_decode from 'jwt-decode'
 
-//Funcion que muestra la lista de todas las reglas existentes
 export const signUp = (userModel) => {
   let defaults
 
