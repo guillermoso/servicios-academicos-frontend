@@ -2,7 +2,7 @@
   <v-navigation-drawer
     :width="drawerWidth"
     v-model="drawerState"
-    color="#0d113f"
+    color="#224c91"
     class="nav-drawer-container"
     :permanent="$vuetify.breakpoint.lgAndUp"
     :bottom="$vuetify.breakpoint.mdAndDown"
@@ -10,11 +10,12 @@
     app
   >
     <div class="app-title app-title-padding" v-if="$vuetify.breakpoint.lgAndUp">
-      Servicios académicos
+      <div>UACJ</div>
+      <div>Servicios académicos</div>
       <v-divider></v-divider>
     </div>
     <div v-else class="close-btn-cont">
-      <v-icon class="close-btn" @click="drawerState = !drawerState"
+      <v-icon color="#d3d08d" class="close-btn" @click="drawerState = !drawerState"
         >close</v-icon
       >
     </div>
@@ -30,7 +31,7 @@
           <template v-slot:activator>
             <v-list-item-icon>
               <!-- <v-icon v-text="item.icono"></v-icon> -->
-              <v-icon>{{item.icono}}</v-icon>
+              <v-icon color="#d3d08d">{{item.icono}}</v-icon>
             </v-list-item-icon>
             <v-list-item-content class="menu-item">{{
               item.nombre
@@ -106,8 +107,8 @@ export default {
       this.$emit("update:state", false);
     },
     logout() {
-      this.$store.commit("logout")
       this.$router.push("login")
+      this.$store.commit("logout")
     }
   },
 };
@@ -115,9 +116,13 @@ export default {
 
 <style scoped>
 .app-title {
-  color: #ffffff;
+  color: #d3d08d;
   font-size: 1.5em;
   text-align: center;
+}
+
+.menu-item {
+  color: #d3d08d;
 }
 
 .app-title-padding {
@@ -151,6 +156,10 @@ export default {
 
 /* color del texto activo dentro del navbar */
 .v-application .custom-active-color .primary--text {
-  color: #2196f3 !important;
+  color:#d3d08d !important;
+}
+
+.v-list .v-list-item--active .v-icon { 
+  color:#d3d08d !important;
 }
 </style>
