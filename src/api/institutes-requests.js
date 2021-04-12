@@ -2,7 +2,7 @@ import axios from "./index.js"
 
 const prefix = "/api/institutos";
 
-export const listInstitutes = (paginationData) => {
+export const listInstitutes = (paginationData, searchValue) => {
   let defaults = {
     resultados_por_pagina: 20,
     pagina: 1,
@@ -10,6 +10,10 @@ export const listInstitutes = (paginationData) => {
 
   // merge default values to config obj sent on function invocation
   Object.assign(defaults, paginationData)
+
+  if (searchValue) {
+    defaults['instituto'] = searchValue;
+  }
 
   let route = `${prefix}/listar`;
   return new Promise((resolve, reject) => {
@@ -38,7 +42,7 @@ export const deleteInstitute = (instituto_id) => {
     throw Error("Id de instituto no válido");
   }
   const data = {
-    instituto_id: instituto_id,
+    id: instituto_id,
   };
 
   let route = `${prefix}/eliminar`;
@@ -92,7 +96,7 @@ export const updateInstitute = ({id, instituto}) => {
   }
 
   const data = {
-    "instituto_id": id,
+    "id": id,
     "instituto": instituto
   }
 

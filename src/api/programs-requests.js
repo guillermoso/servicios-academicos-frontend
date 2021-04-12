@@ -2,14 +2,17 @@ import axios from "./index.js";
 
 const prefix = "/api/programas";
 
-// TODO: hacer esta llamada para un autocompletec
-export const listPrograms = (paginationData) => {
+export const listPrograms = (paginationData, searchValue) => {
   let defaults = {
     resultados_por_pagina: 20,
     pagina: 1,
   };
 
   Object.assign(defaults, paginationData);
+
+  if (searchValue) {
+    defaults['programa'] = searchValue;
+  }
 
   let route = `${prefix}/listar`;
   return new Promise((resolve, reject) => {
@@ -38,7 +41,7 @@ export const deleteProgram = (program_id) => {
     throw Error("Id de programa no válido");
   }
   const data = {
-    programa_id: program_id,
+    id: program_id,
   };
 
   let route = `${prefix}/eliminar`;
@@ -91,7 +94,7 @@ export const updateProgram = ({id, programa}) => {
   }
 
   const data = {
-    "programa_id": id,
+    "id": id,
     "programa": programa
   }
 
