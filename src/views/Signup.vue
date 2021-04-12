@@ -2,10 +2,15 @@
   <section class="signup-container">
     <div>
       <h1 class="signup-title">Crea una cuenta</h1>
-      <v-form class="signup-form" ref="signup-form" v-model="valid" lazy-validation>
+      <v-form
+        class="signup-form"
+        ref="signup-form"
+        v-model="valid"
+        lazy-validation
+      >
         <v-alert class="signup-alert" icon="shield" text type="info">
-          Nota: Su contraseña será enviada a su correo de la UACJ. Si es incorporado esta será
-          enviada al correo que utilice para registrarse.
+          Nota: Su contraseña será enviada a su correo de la UACJ. Si es
+          incorporado esta será enviada al correo que utilice para registrarse.
         </v-alert>
         <v-select
           v-model="userModel.tipo_usuario"
@@ -41,15 +46,31 @@
           outlined
           required
         ></v-text-field>
-        <institutes-select
+        <autocomplete
+          label="Escuela"
+          ref="schools-select"
+          request_field_name="escuela"
+          :request_method="schoolsRequest"
+          :rules="requiredRule"
+          v-if="userModel.tipo_usuario == 'Incorporado'"
+          required
+          @nuevo-valor="userModel.escuela = $event.value"
+        />
+        <autocomplete
+          label="Instituto"
           ref="institutes-select"
+          request_field_name="instituto"
+          :request_method="institutesRequest"
           :rules="requiredRule"
           v-if="userModel.tipo_usuario == 'Alumno'"
           required
           @nuevo-valor="userModel.instituto = $event.value"
         />
-        <programs-select
+        <autocomplete
+          label="Programa"
           ref="programs-select"
+          request_field_name="programa"
+          :request_method="programsRequest"
           :rules="requiredRule"
           v-if="userModel.tipo_usuario == 'Alumno'"
           required
@@ -62,12 +83,14 @@
 </template>
 
 <script>
-import { signUp } from "../api/user-requests"
-import institutesSelect from "../components/selects/institutes-select"
-import programsSelect from "../components/selects/programs-select"
+import { signUp } from "../api/user-requests";
+import { listPrograms } from "../api/programs-requests";
+import { listInstitutes } from "../api/institutes-requests"
+import { listSchools } from "../api/schools-requests"
+import autocomplete from "../components/global/autocomplete";
 
 export default {
-  components: { institutesSelect, programsSelect },
+  components: { autocomplete },
   data: () => ({
     cargando: false,
     valid: true,
@@ -81,6 +104,7 @@ export default {
       matricula: "",
       nombre: "",
       instituto: "",
+      escuela: "",
       programa: "",
       correo: "",
     },
@@ -95,47 +119,52 @@ export default {
       },
     ],
     institutes: ["IADA", "ICSA", "IIT", "CU"],
+    programsRequest: listPrograms,
+    institutesRequest: listInstitutes,
+    schoolsRequest: listSchools
   }),
   methods: {
     signup() {
-      if (this.$refs["signup-form"].validate()) {        
+      if (this.$refs["signup-form"].validate()) {
         this.cargando = true;
         signUp(this.userModel)
           .then(() => {
             this.$message({
               message: "Cuenta creada correctamente.",
               type: "success",
-            })
-            this.$router.push("/login")
+            });
+            this.$router.push("/login");
           })
           .catch((error) => {
-            console.error(error.response)
+            console.error(error.response);
 
             this.$message({
               message: "Ocurrió un error al crear su cuenta",
               type: "error",
-            })
+            });
           })
           .finally(() => {
-              this.cargando = false;
-          })
-        }
+            this.cargando = false;
+          });
+      }
     },
     resetForm() {
-      this.valid = true
+      this.valid = true;
       this.userModel = {
         tipo_usuario: "Alumno",
         matricula: "",
         nombre: "",
         instituto: "",
+        escuela: "",
         programa: "",
         correo: "",
-      }
-      this.$refs["programs-select"].reset_select()
-      this.$refs["institutes-select"].reset_select()
+      };
+      this.$refs["programs-select"].reset_select();
+      this.$refs["institutes-select"].reset_select();
+      this.$refs["schools-select"].reset_select();
     },
   },
-}
+};
 </script>
 
 <style scoped>
